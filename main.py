@@ -17,8 +17,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
+
     window.blit(bg_image, (0, 0))
     d.draw(window)
+
+    d.move()
 
     pygame.display.update()
     clock.tick(30)
