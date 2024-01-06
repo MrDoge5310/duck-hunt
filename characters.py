@@ -9,10 +9,12 @@ class Sprite:
         self.y = y
         self.size = 64
         self.hitbox = pygame.Rect(x, y, self.size, self.size)
-        self.image = pygame.image.load(filename)
+        self.frames = filename
+        self.image = pygame.image.load(filename[0])
         self.image = pygame.transform.scale(self.image, (self.size, self.size))
-        self.vx = random.randint(3, 6)
-        self.vy = random.randint(3, 6)
+        self.frame = 0
+        self.vx = random.randint(6, 10)
+        self.vy = random.randint(6, 10)
         self.canGoAway = False
 
     def draw(self, wnd):
@@ -40,3 +42,12 @@ class Sprite:
         elif self.hitbox.y > 400 - self.size:
             self.hitbox.y = 400 - self.size
             self.vy *= -1
+
+    def animate(self):
+        if self.frame != len(self.frames) - 1:
+            self.frame += 1
+        else:
+            self.frame = 0
+        self.image = pygame.image.load(self.frames[self.frame])
+        self.image = pygame.transform.scale(self.image, (self.size, self.size))
+
