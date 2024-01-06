@@ -1,3 +1,5 @@
+import random
+
 import pygame
 from characters import *
 pygame.init()
@@ -7,7 +9,12 @@ height = 600
 window = pygame.display.set_mode((width, height))
 bg_image = pygame.image.load('bg-image.png')
 
-d = Sprite(width/2, height/2, ['duck0.png', 'duck1.png', 'duck2.png'])
+ducks_amount = random.randint(1, 3)
+ducks = []
+print(ducks_amount)
+while ducks_amount > 0:
+    ducks.append(Sprite(random.randint(0, width-100), height/2, ['duck1.png', 'duck0.png', 'duck2.png', 'duck3.png']))
+    ducks_amount -= 1
 
 clock = pygame.time.Clock()
 
@@ -21,10 +28,10 @@ while running:
 
     window.blit(bg_image, (0, 0))
 
-    d.move()
-    d.animate()
-
-    d.draw(window)
+    for d in ducks:
+        d.move()
+        d.animate()
+        d.draw(window)
     pygame.display.update()
-    clock.tick(15)
+    clock.tick(10)
 pygame.quit()

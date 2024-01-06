@@ -13,11 +13,20 @@ class Sprite:
         self.image = pygame.image.load(filename[0])
         self.image = pygame.transform.scale(self.image, (self.size, self.size))
         self.frame = 0
-        self.vx = random.randint(6, 10)
-        self.vy = random.randint(6, 10)
+
+        self.direction = random.choice(['left', 'right'])
+        if self.direction == 'right':
+            self.vx = random.randint(5, 15)
+        if self.direction == 'left':
+            self.vx = random.randint(5, 15) * -1
+        self.vy = random.randint(5, 15)
         self.canGoAway = False
 
     def draw(self, wnd):
+        if self.direction == 'left':
+            self.image = pygame.transform.flip(self.image, 1, 0)
+        if self.direction == 'right':
+            self.image = pygame.transform.flip(self.image, 0, 0)
         wnd.blit(self.image, (self.hitbox.x, self.hitbox.y))
 
     def move(self):
@@ -44,6 +53,10 @@ class Sprite:
             self.vy *= -1
 
     def animate(self):
+        if self.vx > 0:
+            self.direction = 'right'
+        if self.vx < 0:
+            self.direction = 'left'
         if self.frame != len(self.frames) - 1:
             self.frame += 1
         else:
