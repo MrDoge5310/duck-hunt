@@ -8,21 +8,25 @@ width = 800
 height = 600
 window = pygame.display.set_mode((width, height))
 bg_image = pygame.image.load('bg-image.png')
+grass_image = pygame.image.load('grass.png')
 
 ducks_amount = random.randint(1, 3)
 ducks = []
-print(ducks_amount)
 while ducks_amount > 0:
     ducks.append(Sprite(random.randint(0, width-100), height/2, ['duck1.png', 'duck0.png', 'duck2.png', 'duck3.png']))
     ducks_amount -= 1
 
 clock = pygame.time.Clock()
+gun = Gun()
 
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            x, y = pygame.mouse.get_pos()
+            gun.shot(x, y, ducks)
 
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
@@ -32,6 +36,7 @@ while running:
         d.move()
         d.animate()
         d.draw(window)
+    window.blit(grass_image, (0, 110))
     pygame.display.update()
     clock.tick(10)
 pygame.quit()
