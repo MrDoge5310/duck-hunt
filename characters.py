@@ -67,6 +67,14 @@ class Sprite:
             self.hitbox.y = 450 - self.size
             self.vy *= -1
 
+    def isAway(self):
+        if self.hitbox.x > 800 or self.hitbox.x < 0 or self.hitbox.y < 0:
+            return True
+
+    def isDead(self):
+        if not self.alive and self.hitbox.y > 400 - self.size:
+            return True
+
     def animate(self):
         if self.vx > 0:
             self.direction = 'right'
@@ -89,9 +97,18 @@ class Gun:
     def __init__(self):
         self.ammo = 3
         self.reloading = False
-        self.reload_time = 3
+        self.reload_time = 20
 
     def shot(self, x, y, ducks):
-        for duck in ducks:
-            if duck.hitbox.collidepoint(x, y):
-                duck.kill()
+        if not self.reloading:
+            for duck in ducks:
+                if duck.hitbox.collidepoint(x, y):
+                    duck.kill()
+            self.reloading = True
+
+    def reload(self):
+        if self.reloading:
+            self.reload_time -= 1
+            if self.reload_time == 0:
+                self.reloading = False
+                self.reload_time = 20
