@@ -1,7 +1,15 @@
 import random
-import pygame
 from characters import *
 pygame.init()
+
+
+def spawnDucks(ducks_amount):
+    temp_ducks = []
+    while ducks_amount > 0:
+        temp_ducks.append(Sprite(random.randint(0, width-100), height/2, ['duck1.png', 'duck0.png', 'duck2.png', 'duck3.png']))
+        ducks_amount -= 1
+    return temp_ducks
+
 
 width = 800
 height = 600
@@ -11,11 +19,7 @@ grass_image = pygame.image.load('grass.png')
 
 ducks_away = 0
 
-ducks_amount = random.randint(1, 3)
-ducks = []
-while ducks_amount > 0:
-    ducks.append(Sprite(random.randint(0, width-100), height/2, ['duck1.png', 'duck0.png', 'duck2.png', 'duck3.png']))
-    ducks_amount -= 1
+ducks = spawnDucks(random.randint(1, 3))
 
 clock = pygame.time.Clock()
 gun = Gun()
@@ -33,6 +37,9 @@ while running:
 
     window.blit(bg_image, (0, 0))
 
+    if len(ducks) == 0:
+        ducks = spawnDucks(random.randint(1, 3))
+
     for d in ducks:
         d.move()
         d.animate()
@@ -46,7 +53,6 @@ while running:
     if ducks_away >= 3:
         running = False
 
-    print(len(ducks))
     gun.reload()
     window.blit(grass_image, (0, 110))
     pygame.display.update()
