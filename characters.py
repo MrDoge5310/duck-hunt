@@ -1,5 +1,5 @@
 import random
-
+from time import sleep
 import pygame
 
 
@@ -112,3 +112,29 @@ class Gun:
             if self.reload_time == 0:
                 self.reloading = False
                 self.reload_time = 20
+
+
+class Dog:
+    def __init__(self, x, y, filename):
+        self.x = x
+        self.y = y
+        self.size = 64
+        self.isVisible = False
+        self.hitbox = pygame.Rect(x, y, self.size, self.size)
+        self.frames = filename
+        self.image = pygame.image.load(self.frames[0])
+        self.image = pygame.transform.scale(self.image, (self.size, self.size))
+
+    def draw(self, scr, ducks_killed):
+        if self.isVisible:
+            self.image = pygame.image.load(self.frames[ducks_killed])
+            self.image = pygame.transform.scale(self.image, (self.size * 2, self.size * 2))
+            if self.hitbox.y > 200:
+                self.hitbox.y -= 0.2
+                print(self.hitbox.y)
+            scr.blit(self.image, (self.hitbox.x, self.hitbox.y))
+            if self.hitbox.y <= 200:
+                self.y = 300
+                self.isVisible = False
+                return True
+
