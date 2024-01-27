@@ -24,7 +24,7 @@ ducks = spawnDucks(random.randint(1, 3))
 
 clock = pygame.time.Clock()
 gun = Gun()
-dog = Dog(width/2, 300, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
+dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
 
 running = True
 while running:
@@ -43,10 +43,10 @@ while running:
         if killed_ducks == 3:
             killed_ducks = 2
         dog.isVisible = True
-        killed_ducks = 0
 
     if dog.draw(window, killed_ducks):
         ducks = spawnDucks(random.randint(1, 3))
+        killed_ducks = 0
 
     for d in ducks:
         d.move()

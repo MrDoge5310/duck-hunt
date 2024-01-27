@@ -127,14 +127,14 @@ class Dog:
 
     def draw(self, scr, ducks_killed):
         if self.isVisible:
+            print(ducks_killed)
             self.image = pygame.image.load(self.frames[ducks_killed])
             self.image = pygame.transform.scale(self.image, (self.size * 2, self.size * 2))
-            if self.hitbox.y > 200:
-                self.hitbox.y -= 0.2
-                print(self.hitbox.y)
+            if self.hitbox.y > 300:
+                self.hitbox.y -= 4
             scr.blit(self.image, (self.hitbox.x, self.hitbox.y))
-            if self.hitbox.y <= 200:
-                self.y = 300
+            if self.hitbox.y <= 300:
+                self.hitbox.y = 380
                 self.isVisible = False
                 return True
 
