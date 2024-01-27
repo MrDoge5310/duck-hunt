@@ -26,6 +26,10 @@ clock = pygame.time.Clock()
 gun = Gun()
 dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
 
+pygame.mouse.set_visible(False)
+cursor_img_rect = gun.get_rect()
+
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -35,9 +39,10 @@ while running:
             x, y = pygame.mouse.get_pos()
             gun.shot(x, y, ducks)
 
-    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
-
     window.blit(bg_image, (0, 0))
+
+    cursor_img_rect.center = pygame.mouse.get_pos()
+    window.blit(gun.get_img(), cursor_img_rect)
 
     if len(ducks) == 0:
         if killed_ducks == 3:

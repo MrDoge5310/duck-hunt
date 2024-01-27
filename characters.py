@@ -98,6 +98,10 @@ class Gun:
         self.ammo = 3
         self.reloading = False
         self.reload_time = 20
+        self.reload_img = pygame.image.load('reload_img.png')
+        self.reload_img = pygame.transform.scale(self.reload_img, (32, 32))
+        self.gun_img = pygame.image.load('gun_img.png')
+        self.gun_img = pygame.transform.scale(self.gun_img, (32, 32))
 
     def shot(self, x, y, ducks):
         if not self.reloading:
@@ -112,6 +116,15 @@ class Gun:
             if self.reload_time == 0:
                 self.reloading = False
                 self.reload_time = 20
+
+    def get_img(self):
+        if self.reloading:
+            return self.reload_img
+        else:
+            return self.gun_img
+
+    def get_rect(self):
+        return self.gun_img.get_rect()
 
 
 class Dog:
