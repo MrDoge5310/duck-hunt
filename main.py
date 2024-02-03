@@ -1,6 +1,18 @@
 import random
+
+import pygame.font
+
 from characters import *
 pygame.init()
+
+
+def draw_menu(wnd):
+    pygame.draw.rect(wnd, 'black', score_rect, 0, 15)
+    pygame.draw.rect(wnd, 'lime', score_rect, 5, 15)
+    score = menu_font.render('Score', 1, 'white')
+    wnd.blit(score, (score_rect.x + 15, score_rect.y + 15))
+    score = menu_font.render('00000', 1, 'white')
+    wnd.blit(score, (score_rect.x + 15, score_rect.y + 15+24))
 
 
 def spawnDucks(ducks_amount):
@@ -25,6 +37,9 @@ ducks = spawnDucks(random.randint(1, 3))
 clock = pygame.time.Clock()
 gun = Gun()
 dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
+
+score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
+menu_font = pygame.font.Font('Minecraft Rus NEW.otf', 24)
 
 pygame.mouse.set_visible(False)
 cursor_img_rect = gun.get_rect()
@@ -69,6 +84,9 @@ while running:
 
     gun.reload()
     window.blit(grass_image, (0, 110))
+
+    draw_menu(window)
+
     pygame.display.update()
     clock.tick(10)
 pygame.quit()
