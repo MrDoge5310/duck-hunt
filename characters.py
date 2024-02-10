@@ -104,17 +104,21 @@ class Gun:
         self.gun_img = pygame.transform.scale(self.gun_img, (32, 32))
 
     def shot(self, x, y, ducks):
+        print(self.ammo)
         if not self.reloading:
-            for duck in ducks:
-                if duck.hitbox.collidepoint(x, y):
-                    duck.kill()
-            self.reloading = True
+            if self.ammo > 0:
+                self.ammo -= 1
+                for duck in ducks:
+                    if duck.hitbox.collidepoint(x, y):
+                        duck.kill()
+                self.reloading = True
 
     def reload(self):
         if self.reloading:
             self.reload_time -= 1
             if self.reload_time == 0:
-                self.reloading = False
+                if self.ammo != 0:
+                    self.reloading = False
                 self.reload_time = 20
 
     def get_img(self):

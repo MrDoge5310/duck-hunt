@@ -9,10 +9,17 @@ pygame.init()
 def draw_menu(wnd):
     pygame.draw.rect(wnd, 'black', score_rect, 0, 15)
     pygame.draw.rect(wnd, 'lime', score_rect, 5, 15)
-    score = menu_font.render('Score', 1, 'white')
-    wnd.blit(score, (score_rect.x + 15, score_rect.y + 15))
-    score = menu_font.render('00000', 1, 'white')
-    wnd.blit(score, (score_rect.x + 15, score_rect.y + 15+24))
+    score_txt = menu_font.render('Score', 1, 'white')
+    wnd.blit(score_txt, (score_rect.x + 15, score_rect.y + 15))
+    score_txt = menu_font.render(str(score), 1, 'white')
+    wnd.blit(score_txt, (score_rect.x + 15, score_rect.y + 15+24))
+
+    bullet_img = pygame.image.load('bullet.png')
+    pygame.draw.rect(wnd, 'black', ammo_rect, 0, 15)
+    pygame.draw.rect(wnd, 'lime', ammo_rect, 5, 15)
+    ammo = menu_font.render('Shot', 1, 'white')
+    wnd.blit(ammo, (ammo_rect.x + 15, ammo_rect.y + 15+24))
+    wnd.blit(bullet_img, (ammo_rect.x + 15, ammo_rect.y + 10))
 
 
 def spawnDucks(ducks_amount):
@@ -38,7 +45,10 @@ clock = pygame.time.Clock()
 gun = Gun()
 dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
 
+score = 0
+
 score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
+ammo_rect = pygame.Rect(55, height - 125, 120, 75)
 menu_font = pygame.font.Font('Minecraft Rus NEW.otf', 24)
 
 pygame.mouse.set_visible(False)
@@ -60,7 +70,9 @@ while running:
     window.blit(gun.get_img(), cursor_img_rect)
 
     if len(ducks) == 0:
+        gun.ammo = 3
         if killed_ducks == 3:
+            score += 20
             killed_ducks = 2
         dog.isVisible = True
 
@@ -72,9 +84,11 @@ while running:
         d.move()
         d.animate()
         if d.isAway():
+            score -= 100
             ducks_away += 1
             ducks.remove(d)
         if d.isDead():
+            score += random.randint(100, 201)
             killed_ducks += 1
             ducks.remove(d)
         d.draw(window)
