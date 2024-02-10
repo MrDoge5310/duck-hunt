@@ -18,8 +18,20 @@ def draw_menu(wnd):
     pygame.draw.rect(wnd, 'black', ammo_rect, 0, 15)
     pygame.draw.rect(wnd, 'lime', ammo_rect, 5, 15)
     ammo = menu_font.render('Shot', 1, 'white')
+
+    i = 0
+    while i < gun.ammo:
+        wnd.blit(bullet_img, ammo_cords[i])
+        i += 1
+
     wnd.blit(ammo, (ammo_rect.x + 15, ammo_rect.y + 15+24))
-    wnd.blit(bullet_img, (ammo_rect.x + 15, ammo_rect.y + 10))
+
+    pygame.draw.rect(wnd, 'black', duck_counter, 0, 15)
+    pygame.draw.rect(wnd, 'lime', duck_counter, 5, 15)
+
+    for ic in duck_icons:
+        pygame.draw.rect(wnd, 'white', ic, 0, 5)
+
 
 
 def spawnDucks(ducks_amount):
@@ -49,6 +61,17 @@ score = 0
 
 score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
 ammo_rect = pygame.Rect(55, height - 125, 120, 75)
+duck_counter = pygame.Rect(200, height - 125, 400, 75)
+duck_icons = []
+i = 0
+icon_size = 25
+while i < 10:
+    duck_icons.append(pygame.Rect(duck_counter.x + i * (icon_size + 12) + 20, duck_counter.y + 25, icon_size, icon_size))
+    i += 1
+ammo_cords = [(ammo_rect.x + 15, ammo_rect.y + 12),
+              (ammo_rect.x + 30+14, ammo_rect.y + 12),
+              (ammo_rect.x + 45+28, ammo_rect.y + 12)]
+
 menu_font = pygame.font.Font('Minecraft Rus NEW.otf', 24)
 
 pygame.mouse.set_visible(False)
