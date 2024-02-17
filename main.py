@@ -1,5 +1,4 @@
 import random
-
 import pygame.font
 
 from characters import *
@@ -30,8 +29,11 @@ def draw_menu(wnd):
     pygame.draw.rect(wnd, 'lime', duck_counter, 5, 15)
 
     for ic in duck_icons:
-        pygame.draw.rect(wnd, 'white', ic, 0, 5)
-
+        index = duck_icons.index(ic)
+        if index < total_ducks_killed:
+            pygame.draw.rect(wnd, 'red', ic, 0, 5)
+        else:
+            pygame.draw.rect(wnd, 'white', ic, 0, 5)
 
 
 def spawnDucks(ducks_amount):
@@ -58,6 +60,7 @@ gun = Gun()
 dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
 
 score = 0
+total_ducks_killed = 0
 
 score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
 ammo_rect = pygame.Rect(55, height - 125, 120, 75)
@@ -112,11 +115,14 @@ while running:
             ducks.remove(d)
         if d.isDead():
             score += random.randint(100, 201)
+            total_ducks_killed += 1
             killed_ducks += 1
             ducks.remove(d)
         d.draw(window)
 
     if ducks_away >= 3:
+        running = False
+    if total_ducks_killed == 10:
         running = False
 
     gun.reload()

@@ -154,4 +154,3 @@ class Dog:
                 self.hitbox.y = 380
                 self.isVisible = False
                 return True
-
