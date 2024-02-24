@@ -49,6 +49,7 @@ height = 600
 window = pygame.display.set_mode((width, height))
 bg_image = pygame.image.load('bg-image.png')
 grass_image = pygame.image.load('grass.png')
+status = 'menu'
 
 ducks_away = 0
 killed_ducks = 0
@@ -66,6 +67,41 @@ score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
 ammo_rect = pygame.Rect(55, height - 125, 120, 75)
 duck_counter = pygame.Rect(200, height - 125, 400, 75)
 duck_icons = []
+
+
+def main_menu(wnd):
+    play_button = pygame.Rect(100, 200, 200, 75)
+    settings_button = pygame.Rect(100, 400, 200, 75)
+    exit_button = pygame.Rect(100, 600, 200, 75)
+
+    isMenu = True
+    while isMenu:
+        wnd.fill('MidnightBlue')
+
+        pygame.draw.rect(wnd, 'black', play_button, 0, 15)
+        pygame.draw.rect(wnd, 'lime', play_button, 5, 15)
+        play_text = menu_font.render('Play', 1, 'white')
+        wnd.blit(play_text, (play_button.x + 15, play_button.y + 15))
+
+        pygame.draw.rect(wnd, 'black', settings_button, 0, 15)
+        pygame.draw.rect(wnd, 'lime', settings_button, 5, 15)
+        settings_text = menu_font.render('Play', 1, 'white')
+        wnd.blit(settings_text, (settings_button.x + 15, settings_button.y + 15))
+
+        pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
+        pygame.draw.rect(wnd, 'lime', exit_button, 5, 15)
+        exit_text = menu_font.render('Play', 1, 'white')
+        wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 15))
+
+        for event_ in pygame.event.get():
+            if event_.type == pygame.MOUSEBUTTONDOWN and event_.button == 1:
+                x_, y_ = pygame.mouse.get_pos()
+                if play_button.collidepoint(x_, y_):
+                    break
+        pygame.display.update()
+        clock.tick(60)
+
+
 i = 0
 icon_size = 25
 while i < 10:
@@ -79,7 +115,6 @@ menu_font = pygame.font.Font('Minecraft Rus NEW.otf', 24)
 
 pygame.mouse.set_visible(False)
 cursor_img_rect = gun.get_rect()
-
 
 running = True
 while running:
