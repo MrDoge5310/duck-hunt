@@ -43,10 +43,35 @@ def spawnDucks(ducks_amount):
         ducks_amount -= 1
     return temp_ducks
 
+
+def GameOver(wnd, success, score_):
+    play_again_button = pygame.Rect(50, 150, 200, 50)
+    exit_button = pygame.Rect(550, 150, 200, 50)
+    label = pygame.Rect(200, 50, 400, 200)
+    wnd.fill('MidnightBlue')
+
+    pygame.draw.rect(wnd, 'black', play_again_button, 0, 15)
+    pygame.draw.rect(wnd, 'lime', play_again_button, 5, 15)
+    play_text = menu_font.render('Play Again', 1, 'white')
+    wnd.blit(play_text, (play_again_button.x + 15, play_again_button.y + 15))
+
+    pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
+    pygame.draw.rect(wnd, 'lime', exit_button, 5, 15)
+    exit_text = menu_font.render('Exit', 1, 'white')
+    wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 15))
+
+    if success:
+        text_label = menu_font.render(f'You WIN! Your score: {score_}', 1, 'white')
+    else:
+        text_label = menu_font.render(f'You LOOSE! Your score: {score_}', 1, 'white')
+    wnd.blit(text_label, (label.x + 15, label.y + 15))
+
+    return [play_again_button, exit_button]
+
 def main_menu(wnd):
-    play_button = pygame.Rect(100, 200, 200, 75)
-    settings_button = pygame.Rect(100, 400, 200, 75)
-    exit_button = pygame.Rect(100, 600, 200, 75)
+    play_button = pygame.Rect(100, 100, 200, 75)
+    settings_button = pygame.Rect(100, 250, 200, 75)
+    exit_button = pygame.Rect(100, 400, 200, 75)
     wnd.fill('MidnightBlue')
 
     pygame.draw.rect(wnd, 'black', play_button, 0, 15)
@@ -83,6 +108,7 @@ clock = pygame.time.Clock()
 gun = Gun()
 dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
 
+success = None
 score = 0
 total_ducks_killed = 0
 
@@ -102,28 +128,38 @@ ammo_cords = [(ammo_rect.x + 15, ammo_rect.y + 12),
 
 menu_font = pygame.font.Font('Minecraft Rus NEW.otf', 24)
 
-pygame.mouse.set_visible(False)
 cursor_img_rect = gun.get_rect()
 
 running = True
 while running:
-
     if status == 'menu':
         buttons = main_menu(window)
+        pygame.mouse.set_visible(True)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 x, y = pygame.mouse.get_pos()
                 if buttons[0].collidepoint(x, y):
-                    print (1)
+                    status = 'game'
                 if buttons[1].collidepoint(x, y):
-                    print (2)
+                    print(2)
                 if buttons[2].collidepoint(x, y):
-                    print (3)
+                    running = False
+    elif status == 'end':
+        pygame.mouse.set_visible(True)
+        buttons = GameOver(window, success, score)
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                x, y = pygame.mouse.get_pos()
+                if buttons[0].collidepoint(x, y):
+                    status = 'game'
+                if buttons[1].collidepoint(x, y):
+                    running = False
     else:
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -132,6 +168,8 @@ while running:
                 gun.shot(x, y, ducks)
 
         window.blit(bg_image, (0, 0))
+
+        pygame.mouse.set_visible(False)
 
         cursor_img_rect.center = pygame.mouse.get_pos()
         window.blit(gun.get_img(), cursor_img_rect)
@@ -162,9 +200,11 @@ while running:
             d.draw(window)
 
         if ducks_away >= 3:
-            running = False
+            status = 'end'
+            success = False
         if total_ducks_killed == 10:
-            running = False
+            status = 'end'
+            success = True
 
         gun.reload()
         window.blit(grass_image, (0, 110))
@@ -172,5 +212,5 @@ while running:
         draw_menu(window)
 
     pygame.display.update()
-    clock.tick(10)
+    clock.tick(60)
 pygame.quit()
