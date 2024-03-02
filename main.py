@@ -43,6 +43,29 @@ def spawnDucks(ducks_amount):
         ducks_amount -= 1
     return temp_ducks
 
+def main_menu(wnd):
+    play_button = pygame.Rect(100, 200, 200, 75)
+    settings_button = pygame.Rect(100, 400, 200, 75)
+    exit_button = pygame.Rect(100, 600, 200, 75)
+    wnd.fill('MidnightBlue')
+
+    pygame.draw.rect(wnd, 'black', play_button, 0, 15)
+    pygame.draw.rect(wnd, 'lime', play_button, 5, 15)
+    play_text = menu_font.render('Play', 1, 'white')
+    wnd.blit(play_text, (play_button.x + 15, play_button.y + 15))
+
+    pygame.draw.rect(wnd, 'black', settings_button, 0, 15)
+    pygame.draw.rect(wnd, 'lime', settings_button, 5, 15)
+    settings_text = menu_font.render('Settings', 1, 'white')
+    wnd.blit(settings_text, (settings_button.x + 15, settings_button.y + 15))
+
+    pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
+    pygame.draw.rect(wnd, 'lime', exit_button, 5, 15)
+    exit_text = menu_font.render('Exit', 1, 'white')
+    wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 15))
+
+    return [play_button, settings_button, exit_button]
+
 
 width = 800
 height = 600
@@ -68,40 +91,6 @@ ammo_rect = pygame.Rect(55, height - 125, 120, 75)
 duck_counter = pygame.Rect(200, height - 125, 400, 75)
 duck_icons = []
 
-
-def main_menu(wnd):
-    play_button = pygame.Rect(100, 200, 200, 75)
-    settings_button = pygame.Rect(100, 400, 200, 75)
-    exit_button = pygame.Rect(100, 600, 200, 75)
-
-    isMenu = True
-    while isMenu:
-        wnd.fill('MidnightBlue')
-
-        pygame.draw.rect(wnd, 'black', play_button, 0, 15)
-        pygame.draw.rect(wnd, 'lime', play_button, 5, 15)
-        play_text = menu_font.render('Play', 1, 'white')
-        wnd.blit(play_text, (play_button.x + 15, play_button.y + 15))
-
-        pygame.draw.rect(wnd, 'black', settings_button, 0, 15)
-        pygame.draw.rect(wnd, 'lime', settings_button, 5, 15)
-        settings_text = menu_font.render('Play', 1, 'white')
-        wnd.blit(settings_text, (settings_button.x + 15, settings_button.y + 15))
-
-        pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
-        pygame.draw.rect(wnd, 'lime', exit_button, 5, 15)
-        exit_text = menu_font.render('Play', 1, 'white')
-        wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 15))
-
-        for event_ in pygame.event.get():
-            if event_.type == pygame.MOUSEBUTTONDOWN and event_.button == 1:
-                x_, y_ = pygame.mouse.get_pos()
-                if play_button.collidepoint(x_, y_):
-                    break
-        pygame.display.update()
-        clock.tick(60)
-
-
 i = 0
 icon_size = 25
 while i < 10:
@@ -118,52 +107,69 @@ cursor_img_rect = gun.get_rect()
 
 running = True
 while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+
+    if status == 'menu':
+        buttons = main_menu(window)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                x, y = pygame.mouse.get_pos()
+                if buttons[0].collidepoint(x, y):
+                    print (1)
+                if buttons[1].collidepoint(x, y):
+                    print (2)
+                if buttons[2].collidepoint(x, y):
+                    print (3)
+
+    else:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                x, y = pygame.mouse.get_pos()
+                gun.shot(x, y, ducks)
+
+        window.blit(bg_image, (0, 0))
+
+        cursor_img_rect.center = pygame.mouse.get_pos()
+        window.blit(gun.get_img(), cursor_img_rect)
+
+        if len(ducks) == 0:
+            gun.ammo = 3
+            if killed_ducks == 3:
+                score += 20
+                killed_ducks = 2
+            dog.isVisible = True
+
+        if dog.draw(window, killed_ducks):
+            ducks = spawnDucks(random.randint(1, 3))
+            killed_ducks = 0
+
+        for d in ducks:
+            d.move()
+            d.animate()
+            if d.isAway():
+                score -= 100
+                ducks_away += 1
+                ducks.remove(d)
+            if d.isDead():
+                score += random.randint(100, 201)
+                total_ducks_killed += 1
+                killed_ducks += 1
+                ducks.remove(d)
+            d.draw(window)
+
+        if ducks_away >= 3:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            x, y = pygame.mouse.get_pos()
-            gun.shot(x, y, ducks)
+        if total_ducks_killed == 10:
+            running = False
 
-    window.blit(bg_image, (0, 0))
+        gun.reload()
+        window.blit(grass_image, (0, 110))
 
-    cursor_img_rect.center = pygame.mouse.get_pos()
-    window.blit(gun.get_img(), cursor_img_rect)
-
-    if len(ducks) == 0:
-        gun.ammo = 3
-        if killed_ducks == 3:
-            score += 20
-            killed_ducks = 2
-        dog.isVisible = True
-
-    if dog.draw(window, killed_ducks):
-        ducks = spawnDucks(random.randint(1, 3))
-        killed_ducks = 0
-
-    for d in ducks:
-        d.move()
-        d.animate()
-        if d.isAway():
-            score -= 100
-            ducks_away += 1
-            ducks.remove(d)
-        if d.isDead():
-            score += random.randint(100, 201)
-            total_ducks_killed += 1
-            killed_ducks += 1
-            ducks.remove(d)
-        d.draw(window)
-
-    if ducks_away >= 3:
-        running = False
-    if total_ducks_killed == 10:
-        running = False
-
-    gun.reload()
-    window.blit(grass_image, (0, 110))
-
-    draw_menu(window)
+        draw_menu(window)
 
     pygame.display.update()
     clock.tick(10)
