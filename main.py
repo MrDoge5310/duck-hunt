@@ -1,8 +1,9 @@
 import random
 import pygame.font
-
+from game import Game
 from characters import *
 pygame.init()
+game = Game()
 
 
 def draw_menu(wnd):
@@ -10,7 +11,7 @@ def draw_menu(wnd):
     pygame.draw.rect(wnd, 'lime', score_rect, 5, 15)
     score_txt = menu_font.render('Score', 1, 'white')
     wnd.blit(score_txt, (score_rect.x + 15, score_rect.y + 15))
-    score_txt = menu_font.render(str(score), 1, 'white')
+    score_txt = menu_font.render(str(game.score), 1, 'white')
     wnd.blit(score_txt, (score_rect.x + 15, score_rect.y + 15+24))
 
     bullet_img = pygame.image.load('bullet.png')
@@ -30,7 +31,7 @@ def draw_menu(wnd):
 
     for ic in duck_icons:
         index = duck_icons.index(ic)
-        if index < total_ducks_killed:
+        if index < game.total_ducks_killed:
             pygame.draw.rect(wnd, 'red', ic, 0, 5)
         else:
             pygame.draw.rect(wnd, 'white', ic, 0, 5)
@@ -68,6 +69,7 @@ def GameOver(wnd, success, score_):
 
     return [play_again_button, exit_button]
 
+
 def main_menu(wnd):
     play_button = pygame.Rect(100, 100, 200, 75)
     settings_button = pygame.Rect(100, 250, 200, 75)
@@ -99,18 +101,11 @@ bg_image = pygame.image.load('bg-image.png')
 grass_image = pygame.image.load('grass.png')
 status = 'menu'
 
-ducks_away = 0
-killed_ducks = 0
-
 ducks = spawnDucks(random.randint(1, 3))
 
 clock = pygame.time.Clock()
 gun = Gun()
 dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
-
-success = None
-score = 0
-total_ducks_killed = 0
 
 score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
 ammo_rect = pygame.Rect(55, height - 125, 120, 75)
@@ -148,7 +143,7 @@ while running:
                     running = False
     elif status == 'end':
         pygame.mouse.set_visible(True)
-        buttons = GameOver(window, success, score)
+        buttons = GameOver(window, game.success, game.score)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -157,6 +152,9 @@ while running:
                 x, y = pygame.mouse.get_pos()
                 if buttons[0].collidepoint(x, y):
                     status = 'game'
+                    game.restart()
+                    ducks = spawnDucks(random.randint(1, 3))
+                    gun = Gun()
                 if buttons[1].collidepoint(x, y):
                     running = False
     else:
@@ -176,35 +174,35 @@ while running:
 
         if len(ducks) == 0:
             gun.ammo = 3
-            if killed_ducks == 3:
-                score += 20
-                killed_ducks = 2
+            if game.killed_ducks == 3:
+                game.score += 20
+                game.killed_ducks = 2
             dog.isVisible = True
 
-        if dog.draw(window, killed_ducks):
+        if dog.draw(window, game.killed_ducks):
             ducks = spawnDucks(random.randint(1, 3))
-            killed_ducks = 0
+            game.killed_ducks = 0
 
         for d in ducks:
             d.move()
             d.animate()
             if d.isAway():
-                score -= 100
-                ducks_away += 1
+                game.score -= 100
+                game.ducks_away += 1
                 ducks.remove(d)
             if d.isDead():
-                score += random.randint(100, 201)
-                total_ducks_killed += 1
-                killed_ducks += 1
+                game.score += random.randint(100, 201)
+                game.total_ducks_killed += 1
+                game.killed_ducks += 1
                 ducks.remove(d)
             d.draw(window)
 
-        if ducks_away >= 3:
+        if game.ducks_away >= 3:
             status = 'end'
-            success = False
-        if total_ducks_killed == 10:
+            game.success = False
+        if game.total_ducks_killed == 10:
             status = 'end'
-            success = True
+            game.success = True
 
         gun.reload()
         window.blit(grass_image, (0, 110))
@@ -212,5 +210,5 @@ while running:
         draw_menu(window)
 
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(10)
 pygame.quit()
