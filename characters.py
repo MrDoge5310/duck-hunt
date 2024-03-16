@@ -1,5 +1,4 @@
 import random
-from time import sleep
 import pygame
 
 
@@ -14,7 +13,7 @@ class Sprite:
         self.image = pygame.transform.scale(self.image, (self.size, self.size))
         self.frame = 0
 
-        self.dead_images = ['smash_duck.png', 'dead_duck.png']
+        self.dead_images = ['img/smash_duck.png', 'img/dead_duck.png']
         self.smash_time = 10
 
         self.direction = random.choice(['left', 'right'])
@@ -26,6 +25,9 @@ class Sprite:
         self.canGoAway = False
 
         self.alive = True
+
+        self.fall_sound = pygame.mixer.Sound('sound/duck_fall.mp3')
+        self.fall_sound.set_volume(0.2)
 
     def draw(self, wnd):
         if self.direction == 'left':
@@ -88,6 +90,7 @@ class Sprite:
         self.image = pygame.transform.scale(self.image, (self.size, self.size))
 
     def kill(self):
+        self.fall_sound.play(0)
         self.alive = False
         self.vx = 0
         self.vy = 0
@@ -98,9 +101,9 @@ class Gun:
         self.ammo = 3
         self.reloading = False
         self.reload_time = 20
-        self.reload_img = pygame.image.load('reload_img.png')
+        self.reload_img = pygame.image.load('img/reload_img.png')
         self.reload_img = pygame.transform.scale(self.reload_img, (32, 32))
-        self.gun_img = pygame.image.load('gun_img.png')
+        self.gun_img = pygame.image.load('img/gun_img.png')
         self.gun_img = pygame.transform.scale(self.gun_img, (32, 32))
 
     def shot(self, x, y, ducks):
@@ -142,6 +145,9 @@ class Dog:
         self.image = pygame.image.load(self.frames[0])
         self.image = pygame.transform.scale(self.image, (self.size, self.size))
 
+        self.scoreUp = pygame.mixer.Sound('sound/scoreup.mp3')
+        self.scoreUp.set_volume(0.2)
+
     def draw(self, scr, ducks_killed):
         if self.isVisible:
             print(ducks_killed)
@@ -151,6 +157,7 @@ class Dog:
                 self.hitbox.y -= 4
             scr.blit(self.image, (self.hitbox.x, self.hitbox.y))
             if self.hitbox.y <= 300:
+                self.scoreUp.play(0)
                 self.hitbox.y = 380
                 self.isVisible = False
                 return True

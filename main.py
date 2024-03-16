@@ -14,7 +14,7 @@ def draw_menu(wnd):
     score_txt = menu_font.render(str(game.score), 1, 'white')
     wnd.blit(score_txt, (score_rect.x + 15, score_rect.y + 15+24))
 
-    bullet_img = pygame.image.load('bullet.png')
+    bullet_img = pygame.image.load('img/bullet.png')
     pygame.draw.rect(wnd, 'black', ammo_rect, 0, 15)
     pygame.draw.rect(wnd, 'lime', ammo_rect, 5, 15)
     ammo = menu_font.render('Shot', 1, 'white')
@@ -40,7 +40,7 @@ def draw_menu(wnd):
 def spawnDucks(ducks_amount):
     temp_ducks = []
     while ducks_amount > 0:
-        temp_ducks.append(Sprite(random.randint(0, width-100), height/2, ['duck1.png', 'duck0.png', 'duck2.png', 'duck3.png']))
+        temp_ducks.append(Sprite(random.randint(0, width-100), height/2, ['img/duck1.png', 'img/duck0.png', 'img/duck2.png', 'img/duck3.png']))
         ducks_amount -= 1
     return temp_ducks
 
@@ -97,15 +97,15 @@ def main_menu(wnd):
 width = 800
 height = 600
 window = pygame.display.set_mode((width, height))
-bg_image = pygame.image.load('bg-image.png')
-grass_image = pygame.image.load('grass.png')
+bg_image = pygame.image.load('img/bg-image.png')
+grass_image = pygame.image.load('img/grass.png')
 status = 'menu'
 
 ducks = spawnDucks(random.randint(1, 3))
 
 clock = pygame.time.Clock()
 gun = Gun()
-dog = Dog(width/2, 380, ['dog_noducks.png', 'dog_1duck.png', 'dog_2ducks.png'])
+dog = Dog(width/2, 380, ['img/dog_noducks.png', 'img/dog_1duck.png', 'img/dog_2ducks.png'])
 
 score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
 ammo_rect = pygame.Rect(55, height - 125, 120, 75)
