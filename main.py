@@ -88,7 +88,7 @@ def main_menu(wnd):
 
     pygame.draw.rect(wnd, 'black', settings_button, 0, 15)
     pygame.draw.rect(wnd, 'lime', settings_button, 5, 15)
-    settings_text = menu_font.render('Settings', 1, 'white')
+    settings_text = menu_font.render('Leaderboard', 1, 'white')
     wnd.blit(settings_text, (settings_button.x + 15, settings_button.y + 15))
 
     pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
@@ -117,13 +117,15 @@ def leaderboard(wnd):
 
     i = 0
     players = []
-    while i < 5:
-        players.append(leaderboard_stats[i])
+    while i < len(leaderboard_stats):
+        players.append(leaderboard_stats[str(i)])
         i += 1
+        if i == 8:
+            break
 
     offset = 50
     for player in players:
-        line = "{} {} Score: {}".format(player['no'], player['name'], player['score'])
+        line = f"{player['no']}. {player['name']}     Score: {player['score']}"
         line_text = menu_font.render(line, 1, 'white')
         wnd.blit(line_text, (frame.x + 50, frame.y + 15 + offset))
         offset += 50

@@ -1,7 +1,12 @@
 {
-  "player1": {
-    "name": "player1",
+  "0": {
+    "name": "Player1",
     "no": 1,
     "score": 8814
+  },
+  "1": {
+    "name": "Player2",
+    "no": 2,
+    "score": 132
   }
 }
