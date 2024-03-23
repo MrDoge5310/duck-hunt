@@ -1,9 +1,14 @@
-import random
 import pygame.font
 from game import Game
 from characters import *
+import json
 pygame.init()
 game = Game()
+pygame.mixer_music.load('sound/main_theme.mp3')
+pygame.mixer_music.set_volume(0.1)
+
+with open('leaderboadr.json', 'r') as file:
+    leaderboard_stats = json.load(file)
 
 
 def draw_menu(wnd):
@@ -91,7 +96,39 @@ def main_menu(wnd):
     exit_text = menu_font.render('Exit', 1, 'white')
     wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 15))
 
+    play_text = menu_font.render('Play', 1, 'white')
+    wnd.blit(play_text, (play_button.x + 15, play_button.y + 15))
+
     return [play_button, settings_button, exit_button]
+
+
+def leaderboard(wnd):
+    exit_button = pygame.Rect(300, 500, 200, 50)
+    frame = pygame.Rect(150, 50, 500, 400)
+    wnd.fill('MidnightBlue')
+
+    pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
+    pygame.draw.rect(wnd, 'lime', exit_button, 5, 15)
+    exit_text = menu_font.render('Back', 1, 'white')
+    wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 15))
+
+    pygame.draw.rect(wnd, 'black', frame, 0, 15)
+    pygame.draw.rect(wnd, 'lime', frame, 5, 15)
+
+    i = 0
+    players = []
+    while i < 5:
+        players.append(leaderboard_stats[i])
+        i += 1
+
+    offset = 50
+    for player in players:
+        line = "{} {} Score: {}".format(player['no'], player['name'], player['score'])
+        line_text = menu_font.render(line, 1, 'white')
+        wnd.blit(line_text, (frame.x + 50, frame.y + 15 + offset))
+        offset += 50
+
+    return [exit_button]
 
 
 width = 800
@@ -128,6 +165,8 @@ cursor_img_rect = gun.get_rect()
 running = True
 while running:
     if status == 'menu':
+        if not pygame.mixer_music.get_busy():
+            pygame.mixer_music.play(-1)
         buttons = main_menu(window)
         pygame.mouse.set_visible(True)
         for event in pygame.event.get():
@@ -138,10 +177,24 @@ while running:
                 if buttons[0].collidepoint(x, y):
                     status = 'game'
                 if buttons[1].collidepoint(x, y):
-                    print(2)
+                    status = 'leaderboard'
                 if buttons[2].collidepoint(x, y):
                     running = False
+
+    elif status == 'leaderboard':
+        buttons = leaderboard(window)
+        pygame.mouse.set_visible(True)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                x, y = pygame.mouse.get_pos()
+                if buttons[0].collidepoint(x, y):
+                    status = 'menu'
+
     elif status == 'end':
+        if pygame.mixer_music.get_busy():
+            pygame.mixer_music.stop()
         pygame.mouse.set_visible(True)
         buttons = GameOver(window, game.success, game.score)
 
@@ -158,6 +211,8 @@ while running:
                 if buttons[1].collidepoint(x, y):
                     running = False
     else:
+        if pygame.mixer_music.get_busy():
+            pygame.mixer_music.stop()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -199,9 +254,11 @@ while running:
 
         if game.ducks_away >= 3:
             status = 'end'
+            game.fail_sound.play(0)
             game.success = False
         if game.total_ducks_killed == 10:
             status = 'end'
+            game.win_sound.play(0)
             game.success = True
 
         gun.reload()

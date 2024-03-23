@@ -106,10 +106,16 @@ class Gun:
         self.gun_img = pygame.image.load('img/gun_img.png')
         self.gun_img = pygame.transform.scale(self.gun_img, (32, 32))
 
+        self.shot_sound = pygame.mixer.Sound('sound/shot.mp3')
+        self.reload_sound = pygame.mixer.Sound('sound/reload.mp3')
+        self.reload_sound.set_volume(0.2)
+        self.reload_sound_can_play = True
+        self.shot_sound.set_volume(0.3)
+
     def shot(self, x, y, ducks):
-        print(self.ammo)
         if not self.reloading:
             if self.ammo > 0:
+                self.shot_sound.play(0)
                 self.ammo -= 1
                 for duck in ducks:
                     if duck.hitbox.collidepoint(x, y):
@@ -118,10 +124,14 @@ class Gun:
 
     def reload(self):
         if self.reloading:
+            if self.reload_sound_can_play:
+                self.reload_sound.play(0)
+                self.reload_sound_can_play = False
             self.reload_time -= 1
             if self.reload_time == 0:
                 if self.ammo != 0:
                     self.reloading = False
+                self.reload_sound_can_play = True
                 self.reload_time = 20
 
     def get_img(self):
