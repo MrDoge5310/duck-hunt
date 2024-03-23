@@ -77,27 +77,24 @@ def GameOver(wnd, success, score_):
 
 def main_menu(wnd):
     play_button = pygame.Rect(100, 100, 200, 75)
-    settings_button = pygame.Rect(100, 250, 200, 75)
+    settings_button = pygame.Rect(100, 250, 250, 75)
     exit_button = pygame.Rect(100, 400, 200, 75)
     wnd.fill('MidnightBlue')
 
     pygame.draw.rect(wnd, 'black', play_button, 0, 15)
     pygame.draw.rect(wnd, 'lime', play_button, 5, 15)
     play_text = menu_font.render('Play', 1, 'white')
-    wnd.blit(play_text, (play_button.x + 15, play_button.y + 15))
+    wnd.blit(play_text, (play_button.x + 15, play_button.y + 20))
 
     pygame.draw.rect(wnd, 'black', settings_button, 0, 15)
     pygame.draw.rect(wnd, 'lime', settings_button, 5, 15)
     settings_text = menu_font.render('Leaderboard', 1, 'white')
-    wnd.blit(settings_text, (settings_button.x + 15, settings_button.y + 15))
+    wnd.blit(settings_text, (settings_button.x + 15, settings_button.y + 20))
 
     pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
     pygame.draw.rect(wnd, 'lime', exit_button, 5, 15)
     exit_text = menu_font.render('Exit', 1, 'white')
-    wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 15))
-
-    play_text = menu_font.render('Play', 1, 'white')
-    wnd.blit(play_text, (play_button.x + 15, play_button.y + 15))
+    wnd.blit(exit_text, (exit_button.x + 15, exit_button.y + 20))
 
     return [play_button, settings_button, exit_button]
 
@@ -125,7 +122,7 @@ def leaderboard(wnd):
 
     offset = 50
     for player in players:
-        line = f"{player['no']}. {player['name']}     Score: {player['score']}"
+        line = f"{player['no']}. {player['name']}   Score: {player['score']}"
         line_text = menu_font.render(line, 1, 'white')
         wnd.blit(line_text, (frame.x + 50, frame.y + 15 + offset))
         offset += 50
