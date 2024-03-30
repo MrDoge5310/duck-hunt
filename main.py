@@ -7,9 +7,6 @@ game = Game()
 pygame.mixer_music.load('sound/main_theme.mp3')
 pygame.mixer_music.set_volume(0.1)
 
-with open('leaderboadr.json', 'r') as file:
-    leaderboard_stats = json.load(file)
-
 
 def draw_menu(wnd):
     pygame.draw.rect(wnd, 'black', score_rect, 0, 15)
@@ -112,13 +109,7 @@ def leaderboard(wnd):
     pygame.draw.rect(wnd, 'black', frame, 0, 15)
     pygame.draw.rect(wnd, 'lime', frame, 5, 15)
 
-    i = 0
-    players = []
-    while i < len(leaderboard_stats):
-        players.append(leaderboard_stats[str(i)])
-        i += 1
-        if i == 8:
-            break
+    players = game.load_leaderboard()
 
     offset = 50
     for player in players:
@@ -147,6 +138,9 @@ score_rect = pygame.Rect(width - 175, height - 125, 120, 75)
 ammo_rect = pygame.Rect(55, height - 125, 120, 75)
 duck_counter = pygame.Rect(200, height - 125, 400, 75)
 duck_icons = []
+
+prev_player = game.load_leaderboard()[-1]
+
 
 i = 0
 icon_size = 25
@@ -257,6 +251,7 @@ while running:
             game.success = False
         if game.total_ducks_killed == 10:
             status = 'end'
+            game.add_leader(prev_player["no"])
             game.win_sound.play(0)
             game.success = True
 
