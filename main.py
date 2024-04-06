@@ -50,6 +50,7 @@ def spawnDucks(ducks_amount):
 def GameOver(wnd, success, score_):
     play_again_button = pygame.Rect(50, 150, 200, 50)
     exit_button = pygame.Rect(550, 150, 200, 50)
+    leaderboard_button = pygame.Rect(275, 250, 250, 50)
     label = pygame.Rect(200, 50, 400, 200)
     wnd.fill('MidnightBlue')
 
@@ -57,6 +58,11 @@ def GameOver(wnd, success, score_):
     pygame.draw.rect(wnd, 'lime', play_again_button, 5, 15)
     play_text = menu_font.render('Play Again', 1, 'white')
     wnd.blit(play_text, (play_again_button.x + 15, play_again_button.y + 15))
+
+    pygame.draw.rect(wnd, 'black', leaderboard_button, 0, 15)
+    pygame.draw.rect(wnd, 'lime', leaderboard_button, 5, 15)
+    leaderboard_text = menu_font.render('Leaderboard', 1, 'white')
+    wnd.blit(leaderboard_text, (leaderboard_button.x + 15, leaderboard_button.y + 15))
 
     pygame.draw.rect(wnd, 'black', exit_button, 0, 15)
     pygame.draw.rect(wnd, 'lime', exit_button, 5, 15)
@@ -69,7 +75,7 @@ def GameOver(wnd, success, score_):
         text_label = menu_font.render(f'You LOOSE! Your score: {score_}', 1, 'white')
     wnd.blit(text_label, (label.x + 15, label.y + 15))
 
-    return [play_again_button, exit_button]
+    return [play_again_button, exit_button, leaderboard_button]
 
 
 def main_menu(wnd):
@@ -185,6 +191,7 @@ while running:
                 if buttons[0].collidepoint(x, y):
                     status = 'menu'
 
+
     elif status == 'end':
         if pygame.mixer_music.get_busy():
             pygame.mixer_music.stop()
@@ -203,6 +210,8 @@ while running:
                     gun = Gun()
                 if buttons[1].collidepoint(x, y):
                     running = False
+                if buttons[2].collidepoint(x, y):
+                    status = 'leaderboard'
     else:
         if pygame.mixer_music.get_busy():
             pygame.mixer_music.stop()

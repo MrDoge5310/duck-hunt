@@ -41,7 +41,7 @@ class Game:
         print(self.leaderboard)
 
         self.leaderboard[str(no)] = {}
-        self.leaderboard[str(no)]["name"] = "Player{}".format(no)
+        self.leaderboard[str(no)]["name"] = "Player{}".format(no + 1)
         self.leaderboard[str(no)]["no"] = no + 1
         self.leaderboard[str(no)]["score"] = self.score
 
