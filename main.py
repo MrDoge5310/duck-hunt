@@ -1,7 +1,7 @@
 import pygame.font
 from game import Game
 from characters import *
-import json
+
 pygame.init()
 game = Game()
 pygame.mixer_music.load('sound/main_theme.mp3')
